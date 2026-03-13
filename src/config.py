@@ -1,18 +1,21 @@
-import os
+# src/config.py
 from pathlib import Path
+import os
 
-BASE_DIR = Path(__file__).resolve().parent
+# Go UP one level from 'src' to reach the project root
+BASE_DIR = Path(__file__).resolve().parent.parent 
 
 DATA_DIR = BASE_DIR / 'data'
-POSTS_DIR = DATA_DIR / 'posters'
+POSTER_DIR = DATA_DIR / 'posters'
 LOGS_DIR = BASE_DIR / 'logs'
 
-for folder in [DATA_DIR, POSTS_DIR, LOGS_DIR]:
+# Ensure these exist
+for folder in [DATA_DIR, POSTER_DIR, LOGS_DIR]:
     os.makedirs(folder, exist_ok=True)
 
 IMDB_URL = "https://www.imdb.com/chart/top/"
-TIMEOUT = 20  # How long to wait for elements to load
-SCROLL_PAUSE = 2.5  # Time to wait for lazy-loading to trigger
+TIMEOUT = 20
+SCROLL_PAUSE = 2.5
 
-CSV_FILE = DATA_DIR / 'imdb_top_250.csv'
-LOGS_FILE = LOGS_DIR / 'scraping.log'
+CSV_OUTPUT = DATA_DIR / 'imdb_top_250.csv'
+LOG_FILE = LOGS_DIR / 'scraping.log'

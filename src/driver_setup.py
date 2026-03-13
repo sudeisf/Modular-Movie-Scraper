@@ -19,7 +19,7 @@ class WebDriverFactory:
             chrome_options.add_argument("--window-size=1920,1080")
             
         #Stealth & Anti-Bot Measures
-        chrome_options.experimental_options("excludeSwitches", ["enable-automation"])
+        chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
         chrome_options.add_experimental_option('useAutomationExtension', False)
         
         # Initialize with WebDriver Manager (Automates driver updates)
@@ -29,16 +29,13 @@ class WebDriverFactory:
         
         # Remove the 'webdriver' flag from the browser's JavaScript
         # This is a major detection point for sites like IMDb
-        driver.execute_cdp_cmd(
-            "page.addScriptToEvaluateOnNewDocument",
-            {
+        driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
                 "source": """
                     Object.defineProperty(navigator, 'webdriver', {
                         get: () => undefined
-                    });
+                    })
                 """
-            }
-        )
+            })
         
         return driver
         
