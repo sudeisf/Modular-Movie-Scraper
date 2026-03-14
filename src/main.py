@@ -10,10 +10,7 @@ from src.config import IMDB_URL, TIMEOUT, SCROLL_PAUSE, CSV_OUTPUT, POSTER_DIR
 from src.utils import download_poster, clean_movie_data, save_to_csv
 
 def scrape_IMDB():
-    """
-    Main execution function to scrape the IMDb Top 250 list.
-    Handles stealth browser initialization, smart scrolling, and data extraction.
-    """
+
     driver = WebDriverFactory.get_driver(headless=False)
     wait = WebDriverWait(driver, TIMEOUT)
     movie_results = []
@@ -22,7 +19,7 @@ def scrape_IMDB():
         logging.info(f"Navigating to IMDb Top 250 page: {IMDB_URL}")
         driver.get(IMDB_URL)
         
-        # SMART SCROLLING (Handle Lazy Loading) ---
+        # Handle lazy loading by scrolling to the bottom of the page until all movies are loaded
         last_height = driver.execute_script("return document.body.scrollHeight")
         
         print("Scrolling to load all movies...")
@@ -35,7 +32,6 @@ def scrape_IMDB():
                 break
             last_height = new_height
         
-        # --- 2. ELEMENT IDENTIFICATION ---
         # Wait until the list items are present in the DOM
         movies = wait.until(
             EC.presence_of_all_elements_located(
@@ -45,7 +41,6 @@ def scrape_IMDB():
         
         print(f"Detected {len(movies)} movies. Starting extraction...")
         
-        # --- 3. DATA EXTRACTION LOOP ---
         for index, movie in enumerate(movies, start=1):
             try:
                 # Extract Title
@@ -78,7 +73,7 @@ def scrape_IMDB():
                 logging.warning(f"Failed to extract movie at rank {index}: {e}")
                 continue
         
-        # --- 4. EXPORT DATA ---
+        # Export results to CSV
         if movie_results:
             save_to_csv(movie_results, CSV_OUTPUT)
             print(f"\nSUCCESS: Scraped {len(movie_results)} movies.")
